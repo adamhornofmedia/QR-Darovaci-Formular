@@ -65,12 +65,6 @@ ale je použitelný pro všechny projekty, které chtějí přijímat platby jed
 
 ---
 
-## 🧑‍💻 Autor
-
-Vyvinul [Adam Hornof](https://adamhornof.cz)  
-IČO: 23294566
-
----
 
 ## ⚖️ Licence
 
