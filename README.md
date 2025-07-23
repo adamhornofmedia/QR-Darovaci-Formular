@@ -48,16 +48,6 @@ Najdeš v **Nastavení > QR Darovací Formulář**:
 
 ---
 
-## 🖼️ Ukázka
-
-> (Přidej soubor `assets/screenshot.png` do repozitáře)
-
-```
-![Screenshot pluginu](assets/screenshot.png)
-```
-
----
-
 ## 🧠 Využití
 
 Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
