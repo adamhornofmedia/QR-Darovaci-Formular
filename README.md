@@ -1,67 +1,78 @@
-=== QR Darovací Formulář ===
-Contributors: adamhornof
-Donate link: https://www.adamhornof.cz
-Tags: qr platba, dar, donation, paylibo, qr kód, platba
-Requires at least: 5.0
-Tested up to: 6.5
-Requires PHP: 7.4
-Stable tag: 1.0
-License: GPLv2 or later
-License URI: https://www.gnu.org/licenses/gpl-2.0.html
+# QR Darovací Formulář
 
-Vložte na svůj web jednoduchý formulář pro QR platbu s vlastním účtem a zprávou pro příjemce. Podporuje více účtů a dynamické poznámky.
+**WordPress plugin pro generování QR kódu pro darování.**  
+Umožňuje správu více účtů, předdefinované zprávy pro příjemce a generování QR kódu přes [Paylibo API](https://api.paylibo.com/).
 
-== Description ==
+---
 
-Tento plugin umožňuje vložit darovací formulář na web pomocí shortcodu `[qr_darovaci_formular]`. Uživatel zadá své jméno a částku, QR kód se automaticky vygeneruje pomocí API služby Paylibo.
+## ✨ Funkce
 
-V administraci můžete:
-- Nastavit více účtů (např. sbírkový, provozní)
-- U každého účtu určit vlastní předdefinovanou poznámku (např. `DAR – {{JMENO}}`)
-- Při použití shortcodu zvolit, který účet se použije
+- ✅ Více bankovních účtů
+- ✅ Předdefinované zprávy s proměnnou `{{jmeno}}`
+- ✅ Výběr účtu a poznámky na frontendu
+- ✅ Generování QR platby přes Paylibo
+- ✅ Uživatelsky přívětivá administrace
+- ✅ Jednoduchý shortcode
 
-Používá API: [Paylibo QR platba](https://api.paylibo.com)
+---
 
-== Usage ==
+## 🔧 Použití
 
-Základní shortcode:
+### Shortcode
+
+```
 [qr_darovaci_formular]
-Shortcode pro konkrétní účet (název musí odpovídat zadanému v administraci):
-[qr_darovaci_formular ucet=“Provozní účet”]
-Formulář zobrazuje pole pro jméno a částku. Po odeslání se vygeneruje QR kód s údaji podle vybraného účtu.
+```
 
-== Screenshots ==
+> 📌 Zobrazí formulář pro výběr účtu, poznámky, zadání jména a částky.
 
-1. Administrace pluginu s více účty
-2. Ukázka formuláře na front-endu
-3. Vygenerovaný QR kód
+### Parametr `ucet`
 
-== Changelog ==
+```
+[qr_darovaci_formular ucet="0"]
+```
 
-= 1.0 =
-* První veřejná verze pluginu.
-* Podpora více účtů, předdefinovaných zpráv a generování QR kódu přes Paylibo API.
-* Uživatelsky přívětivá administrace.
+- Pokud nechceš výběr účtu na frontendu, zadej index (např. `0` pro první účet).
+- Hodí se pro vložení různých formulářů na různé stránky.
 
-== Installation ==
+---
 
-1. Nahrajte soubor `qr-darovaci-formular.zip` přes **Pluginy > Instalace pluginu > Nahrát plugin**.
-2. Aktivujte plugin.
-3. V menu WordPressu otevřete **QR Darovací Formulář** a nastavte účty.
-4. Vložte shortcode `[qr_darovaci_formular]` na stránku, kde chcete formulář zobrazit.
+## ⚙️ Nastavení v administraci
 
-== Frequently Asked Questions ==
+Najdeš v **Nastavení > QR Darovací Formulář**:
 
-= Jak přidám více účtů? =
-V administraci klikněte na „Přidat nový účet“. Každý účet může mít jiný název, číslo účtu a zprávu pro příjemce.
+- přidání/odebrání účtů
+- číslo účtu, kód banky
+- seznam poznámek (jedna poznámka na řádek)
+- poznámka může obsahovat `{{jmeno}}`, která bude nahrazena jménem dárce
 
-= Jak vložím formulář pro konkrétní účet? =
-Použijte parametr `ucet` ve shortcodu, například:
-[qr_darovaci_formular ucet=“Sbírkový účet”]
-= Co znamená `{{JMENO}}` v poznámce? =
-Tato proměnná se automaticky nahradí jménem, které zadá návštěvník do formuláře.
+---
 
-== Upgrade Notice ==
+## 🖼️ Ukázka
 
-= 1.0 =
-První stabilní verze s podporou více účtů a proměnných poznámek.
+> (Přidej soubor `assets/screenshot.png` do repozitáře)
+
+```
+![Screenshot pluginu](assets/screenshot.png)
+```
+
+---
+
+## 🧠 Využití
+
+Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
+ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
+
+---
+
+## 🧑‍💻 Autor
+
+Vyvinul [Adam Hornof](https://adamhornof.cz)  
+IČO: 23294566
+
+---
+
+## ⚖️ Licence
+
+MIT License – použijte, upravte, rozšiřujte.  
+Budeme rádi za ⭐ hvězdu nebo pull request!
