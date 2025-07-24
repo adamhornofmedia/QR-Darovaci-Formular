@@ -18,9 +18,10 @@ Umožňuje správu více účtů, předdefinované zprávy pro příjemce a gene
 ## 🖼️ Ukázka
 
 - Z pohledu uživatele:
-- ![qr_frontend](https://github.com/user-attachments/assets/efd94037-a809-489e-80b7-eaca75863fba)
+  ![qr_frontend](https://github.com/user-attachments/assets/efd94037-a809-489e-80b7-eaca75863fba)
 - Z pohledu admina webu:
-- ![qr_admin](https://github.com/user-attachments/assets/7c6b4757-83c5-46d0-b585-66994898591c)
+  ![qr_admin1](https://github.com/user-attachments/assets/f666559f-4bd6-454c-8519-9c2cc7f15868)
+
 
 ---
 
