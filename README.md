@@ -15,6 +15,15 @@ Umožňuje správu více účtů, předdefinované zprávy pro příjemce a gene
 - ✅ Jednoduchý shortcode
 
 ---
+## 🖼️ Ukázka
+
+- Z pohledu uživatele:
+  ![qr_frontend](https://github.com/user-attachments/assets/efd94037-a809-489e-80b7-eaca75863fba)
+- Z pohledu admina webu:
+  ![qr_admin1](https://github.com/user-attachments/assets/f666559f-4bd6-454c-8519-9c2cc7f15868)
+
+
+---
 
 ## 🔧 Použití
 
@@ -54,6 +63,9 @@ Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stast
 ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
 
 ---
+### 📦 Stažení pluginu
+
+Aktuální stabilní verze: [v1.1 – drobné vylepšení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases/tag/v1.1)
 
 
 ## ⚖️ Licence
