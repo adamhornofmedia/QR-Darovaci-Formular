@@ -8,6 +8,10 @@ Author: Adam Hornof
 Author URI: https://adamhornof.cz
 License: MIT
 License URI: https://opensource.org/licenses/MIT
+Text Domain: qr-darovaci-formular
+Requires at least: 5.0
+Tested up to: 6.5
+Requires PHP: 7.4
 */
 
 // Přidání odkazu "Nastavení" do seznamu pluginů
