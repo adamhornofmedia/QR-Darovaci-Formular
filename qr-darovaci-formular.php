@@ -1,11 +1,21 @@
 <?php
 /*
 Plugin Name: QR Darovací Formulář
-Description: Darovací formulář s QR kódem, správu účtů a předdefinovaných poznámek. Vytvořeno pro https://stastny-usmev.cz
+Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
+Description: Darovací formulář s QR platbou.
 Version: 1.0
 Author: Adam Hornof
 Author URI: https://adamhornof.cz
+License: MIT
+License URI: https://opensource.org/licenses/MIT
 */
+
+// Přidání odkazu "Nastavení" do seznamu pluginů
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
+    $settings_link = '<a href="' . admin_url('options-general.php?page=qr-darovaci-formular') . '">Nastavení</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+});
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
