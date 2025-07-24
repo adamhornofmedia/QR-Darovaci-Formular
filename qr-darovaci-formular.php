@@ -8,7 +8,7 @@ Author: Adam Hornof
 Author URI: https://adamhornof.cz
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-Text Domain: qr-darovaci-formular
+Text Domain: QR-Darovaci-Formular
 Requires at least: 5.0
 Tested up to: 6.5
 Requires PHP: 7.4
@@ -16,7 +16,7 @@ Requires PHP: 7.4
 
 // Přidání odkazu "Nastavení" do seznamu pluginů
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
-    $settings_link = '<a href="' . admin_url('options-general.php?page=qr-darovaci-formular') . '">Nastavení</a>';
+    $settings_link = '<a href="' . admin_url('options-general.php?page=qr-darovaci-formular') . '">' . esc_html__('Nastavení', 'QR-Darovaci-Formular') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
 });
@@ -39,8 +39,8 @@ class QR_Darovaci_Formular {
 
     public function add_admin_menu() {
         add_options_page(
-            'QR Darovací Formulář',
-            'QR Darovací Formulář',
+            esc_html__('QR Darovací Formulář', 'QR-Darovaci-Formular'),
+            esc_html__('QR Darovací Formulář', 'QR-Darovaci-Formular'),
             'manage_options',
             'qr-darovaci-formular',
             [$this, 'settings_page']
@@ -54,8 +54,18 @@ class QR_Darovaci_Formular {
     }
 
     public function sanitize_accounts($input) {
-        // sanitize input before saving if needed
-        return $input;
+        if (!is_array($input)) return [];
+        $sanitized = [];
+        foreach ($input as $acc) {
+            if (!isset($acc['name'], $acc['account'], $acc['bank_code'], $acc['notes']) || !is_array($acc['notes'])) continue;
+            $sanitized[] = [
+                'name' => sanitize_text_field($acc['name']),
+                'account' => preg_replace('/[^0-9]/', '', $acc['account']),
+                'bank_code' => preg_replace('/[^0-9]/', '', $acc['bank_code']),
+                'notes' => array_filter(array_map('sanitize_text_field', $acc['notes'])),
+            ];
+        }
+        return $sanitized;
     }
 
     public function get_accounts() {
@@ -70,31 +80,31 @@ class QR_Darovaci_Formular {
         $accounts = $this->get_accounts();
         ?>
         <div class="wrap">
-            <h1>QR Darovací Formulář – Nastavení účtů</h1>
-            <p>Zde můžete přidávat a upravovat bankovní účty a předdefinované poznámky pro QR platbu.</p>
-            <p><strong>Jak to funguje:</strong></p>
+            <h1><?php esc_html_e('QR Darovací Formulář – Nastavení účtů', 'QR-Darovaci-Formular'); ?></h1>
+            <p><?php esc_html_e('Zde můžete přidávat a upravovat bankovní účty a předdefinované poznámky pro QR platbu.', 'QR-Darovaci-Formular'); ?></p>
+            <p><strong><?php esc_html_e('Jak to funguje:', 'QR-Darovaci-Formular'); ?></strong></p>
             <ul>
-                <li>Každý účet má své číslo účtu a kód banky.</li>
-                <li>Ke každému účtu můžete nadefinovat více poznámek, každou na nový řádek.</li>
-                <li>Při použití shortcode [qr_darovaci_formular ucet] může návštěvník vybrat účet a poznámku, zadat své jméno a částku.</li>
-                <li>V poznámce může být proměnná <code>{{jmeno}}</code>, která bude nahrazena zadaným jménem.</li>
+                <li><?php esc_html_e('Každý účet má své číslo účtu a kód banky.', 'QR-Darovaci-Formular'); ?></li>
+                <li><?php esc_html_e('Ke každému účtu můžete nadefinovat více poznámek, každou na nový řádek.', 'QR-Darovaci-Formular'); ?></li>
+                <li><?php esc_html_e('Při použití shortcode [qr_darovaci_formular ucet] může návštěvník vybrat účet a poznámku, zadat své jméno a částku.', 'QR-Darovaci-Formular'); ?></li>
+                <li><?php esc_html_e('V poznámce může být proměnná', 'QR-Darovaci-Formular'); ?> <code>{{jmeno}}</code>, <?php esc_html_e('která bude nahrazena zadaným jménem.', 'QR-Darovaci-Formular'); ?></li>
             </ul>
 
-            <h2>Seznam účtů</h2>
+            <h2><?php esc_html_e('Seznam účtů', 'QR-Darovaci-Formular'); ?></h2>
 
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th>Jméno účtu</th>
-                        <th>Číslo účtu</th>
-                        <th>Kód banky</th>
-                        <th>Poznámky</th>
-                        <th>Akce</th>
+                        <th><?php echo esc_html__('Jméno účtu', 'QR-Darovaci-Formular'); ?></th>
+                        <th><?php echo esc_html__('Číslo účtu', 'QR-Darovaci-Formular'); ?></th>
+                        <th><?php echo esc_html__('Kód banky', 'QR-Darovaci-Formular'); ?></th>
+                        <th><?php echo esc_html__('Poznámky', 'QR-Darovaci-Formular'); ?></th>
+                        <th><?php echo esc_html__('Akce', 'QR-Darovaci-Formular'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($accounts)) : ?>
-                    <tr><td colspan="5">Žádné účty nejsou nastaveny.</td></tr>
+                    <tr><td colspan="5"><?php echo esc_html__('Žádné účty nejsou nastaveny.', 'QR-Darovaci-Formular'); ?></td></tr>
                 <?php else: ?>
                     <?php foreach ($accounts as $key => $acc) : ?>
                     <tr>
@@ -107,7 +117,7 @@ class QR_Darovaci_Formular {
                                 <?php wp_nonce_field('delete_account_' . $key); ?>
                                 <input type="hidden" name="action" value="delete_account">
                                 <input type="hidden" name="key" value="<?php echo esc_attr($key); ?>">
-                                <input type="submit" class="button button-link-delete" value="Smazat" onclick="return confirm('Opravdu chcete smazat tento účet?');">
+                                <input type="submit" class="button button-link-delete" value="<?php esc_attr_e('Smazat', 'QR-Darovaci-Formular'); ?>" onclick="return confirm('<?php echo esc_js(__('Opravdu chcete smazat tento účet?', 'QR-Darovaci-Formular')); ?>');">
                             </form>
                         </td>
                     </tr>
@@ -116,29 +126,29 @@ class QR_Darovaci_Formular {
                 </tbody>
             </table>
 
-            <h2>Přidat nový účet</h2>
+            <h2><?php esc_html_e('Přidat nový účet', 'QR-Darovaci-Formular'); ?></h2>
             <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                 <?php wp_nonce_field('add_account'); ?>
                 <input type="hidden" name="action" value="add_account">
                 <table class="form-table">
                     <tr>
-                        <th><label for="name">Jméno účtu</label></th>
+                        <th><label for="name"><?php esc_html_e('Jméno účtu', 'QR-Darovaci-Formular'); ?></label></th>
                         <td><input name="name" type="text" id="name" required class="regular-text"></td>
                     </tr>
                     <tr>
-                        <th><label for="account">Číslo účtu (bez lomítka)</label></th>
-                        <td><input name="account" type="text" id="account" required class="regular-text" placeholder="55552005"></td>
+                        <th><label for="account"><?php esc_html_e('Číslo účtu (bez lomítka)', 'QR-Darovaci-Formular'); ?></label></th>
+                        <td><input name="account" type="text" id="account" required class="regular-text" placeholder="<?php echo esc_attr__('55552005', 'QR-Darovaci-Formular'); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="bank_code">Kód banky</label></th>
-                        <td><input name="bank_code" type="text" id="bank_code" required class="regular-text" placeholder="2010"></td>
+                        <th><label for="bank_code"><?php esc_html_e('Kód banky', 'QR-Darovaci-Formular'); ?></label></th>
+                        <td><input name="bank_code" type="text" id="bank_code" required class="regular-text" placeholder="<?php echo esc_attr__('2010', 'QR-Darovaci-Formular'); ?>"></td>
                     </tr>
                     <tr>
-                        <th><label for="notes">Poznámky (jedna na řádek, použijte <code>{{jmeno}}</code> pro jméno dárce)</label></th>
+                        <th><label for="notes"><?php esc_html_e('Poznámky (jedna na řádek, použijte', 'QR-Darovaci-Formular'); ?> <code>{{jmeno}}</code> <?php esc_html_e('pro jméno dárce)', 'QR-Darovaci-Formular'); ?></label></th>
                         <td><textarea name="notes" id="notes" rows="5" class="large-text"></textarea></td>
                     </tr>
                 </table>
-                <?php submit_button('Přidat účet'); ?>
+                <?php submit_button(esc_html__('Přidat účet', 'QR-Darovaci-Formular')); ?>
             </form>
         </div>
         <?php
@@ -146,14 +156,15 @@ class QR_Darovaci_Formular {
 
     public function handle_add_account() {
         if (!current_user_can('manage_options')) {
-            wp_die('Nemáte oprávnění.');
+            wp_die(esc_html__('Nemáte oprávnění.', 'QR-Darovaci-Formular'));
         }
         check_admin_referer('add_account');
 
-        $name = sanitize_text_field($_POST['name'] ?? '');
-        $account = preg_replace('/[^0-9]/', '', $_POST['account'] ?? '');
-        $bank_code = preg_replace('/[^0-9]/', '', $_POST['bank_code'] ?? '');
-        $notes_raw = $_POST['notes'] ?? '';
+        $name = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
+        $account = isset($_POST['account']) ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['account'])) : '';
+        $bank_code = isset($_POST['bank_code']) ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['bank_code'])) : '';
+        $notes_raw = isset($_POST['notes']) ? wp_unslash($_POST['notes']) : '';
+
         $notes = array_filter(array_map('sanitize_text_field', explode("\n", $notes_raw)));
 
         if (!$name || !$account || !$bank_code) {
@@ -178,7 +189,7 @@ class QR_Darovaci_Formular {
 
     public function handle_delete_account() {
         if (!current_user_can('manage_options')) {
-            wp_die('Nemáte oprávnění.');
+            wp_die(esc_html__('Nemáte oprávnění.', 'QR-Darovaci-Formular'));
         }
         $key = intval($_POST['key'] ?? -1);
         check_admin_referer('delete_account_' . $key);
@@ -198,28 +209,28 @@ class QR_Darovaci_Formular {
     public function shortcode() {
         $accounts = $this->get_accounts();
         if (empty($accounts)) {
-            return '<p>Darovací formulář není zatím nastaven. Kontaktujte správce webu.</p>';
+            return '<p>' . esc_html__('Darovací formulář není zatím nastaven. Kontaktujte správce webu.', 'QR-Darovaci-Formular') . '</p>';
         }
 
         ob_start();
         ?>
         <form id="qr-dar-form" style="max-width: 400px; margin: 2rem auto; text-align: center;">
             <select id="account-select" required style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
-                <option value="" disabled selected>Vyberte účet</option>
+                <option value="" disabled selected><?php echo esc_html__('Vyberte účet', 'QR-Darovaci-Formular'); ?></option>
                 <?php foreach ($accounts as $key => $acc) : ?>
                     <option value="<?php echo esc_attr($key); ?>"><?php echo esc_html($acc['name']); ?></option>
                 <?php endforeach; ?>
             </select>
 
             <select id="note-select" required style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;" disabled>
-                <option value="" disabled selected>Vyberte poznámku</option>
+                <option value="" disabled selected><?php echo esc_html__('Vyberte poznámku', 'QR-Darovaci-Formular'); ?></option>
             </select>
 
-            <input type="text" id="jmeno" placeholder="Jméno a příjmení" required style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
+            <input type="text" id="jmeno" placeholder="<?php echo esc_attr__('Jméno a příjmení', 'QR-Darovaci-Formular'); ?>" required style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
 
-            <input type="number" id="castka" placeholder="Částka (Kč)" required min="1" style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
+            <input type="number" id="castka" placeholder="<?php echo esc_attr__('Částka (Kč)', 'QR-Darovaci-Formular'); ?>" required min="1" style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
 
-            <button type="submit" style="padding: 0.5rem 1rem; background-color: #0073aa; color: #fff; border: none; cursor: pointer;">Vygenerovat QR kód</button>
+            <button type="submit" style="padding: 0.5rem 1rem; background-color: #0073aa; color: #fff; border: none; cursor: pointer;"><?php echo esc_html__('Vygenerovat QR kód', 'QR-Darovaci-Formular'); ?></button>
         </form>
         <div id="qr-output" style="text-align: center; margin-top: 1.5rem;"></div>
 
@@ -249,7 +260,7 @@ class QR_Darovaci_Formular {
                     } else {
                         const opt = document.createElement('option');
                         opt.value = '';
-                        opt.textContent = 'Žádné poznámky';
+                        opt.textContent = '<?php echo esc_js(esc_html__('Žádné poznámky', 'QR-Darovaci-Formular')); ?>';
                         noteSelect.appendChild(opt);
                         noteSelect.disabled = true;
                     }
@@ -276,7 +287,7 @@ class QR_Darovaci_Formular {
                 const url = `https://api.paylibo.com/paylibo/generator/czech/image?accountNumber=${acc.account}&bankCode=${acc.bank_code}&amount=${parseFloat(castka).toFixed(2)}&currency=CZK&message=${encodeURIComponent(message)}`;
 
                 qrOutput.innerHTML = `
-                    <p><strong>Naskenujte QR kód v bankovní aplikaci:</strong></p>
+                    <p><strong><?php echo esc_html__('Naskenujte QR kód v bankovní aplikaci:', 'QR-Darovaci-Formular'); ?></strong></p>
                     <img src="${url}" alt="QR Platba" style="max-width: 100%; height: auto; margin-top: 1rem;">
                     <p>Zpráva: ${message}</p>
                 `;
