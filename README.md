@@ -66,9 +66,3 @@ ale je použitelný pro všechny projekty, které chtějí přijímat platby jed
 ### 📦 Stažení pluginu
 
 Aktuální stabilní verze: [v1.1 – drobné vylepšení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases/tag/v1.1)
-
-
-## ⚖️ Licence
-
-MIT License – použijte, upravte, rozšiřujte.  
-Budeme rádi za ⭐ hvězdu nebo pull request!
