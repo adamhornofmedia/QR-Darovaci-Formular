@@ -3,7 +3,7 @@
 Plugin Name: QR Darovací Formulář
 Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
 Description: Darovací formulář s QR platbou.
-Version: 1.0
+Version: 1.1
 Author: Adam Hornof
 Author URI: https://adamhornof.cz
 License: MIT
