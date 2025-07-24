@@ -54,6 +54,9 @@ Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stast
 ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
 
 ---
+### 📦 Stažení pluginu
+
+Aktuální stabilní verze: [v1.1 – drobné vylepšení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases/tag/v1.1)
 
 
 ## ⚖️ Licence
