@@ -6,8 +6,8 @@ Description: Darovací formulář s QR platbou.
 Version: 1.1
 Author: Adam Hornof
 Author URI: https://adamhornof.cz
-License: MIT
-License URI: https://opensource.org/licenses/MIT
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: qr-darovaci-formular
 Requires at least: 5.0
 Tested up to: 6.5
