@@ -1,7 +1,7 @@
 # QR Darovací Formulář
 
 **WordPress plugin pro generování QR kódu pro darování.**  
-Umožňuje správu více účtů, předdefinované zprávy pro příjemce a generování QR kódu přes [Paylibo API](https://api.paylibo.com/).
+Umožňuje správu více účtů, předdefinované zprávy pro příjemce a generování QR kódu přímo v prohlížeči dle [specifikace Czech QR platba (SPD)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – bez závislosti na externím API.
 
 ---
 
@@ -10,7 +10,9 @@ Umožňuje správu více účtů, předdefinované zprávy pro příjemce a gene
 - ✅ Více bankovních účtů
 - ✅ Předdefinované zprávy s proměnnou `{{jmeno}}`
 - ✅ Výběr účtu a poznámky na frontendu
-- ✅ Generování QR platby přes Paylibo
+- ✅ Generování QR platby přímo v prohlížeči (SPD formát, bez externího API)
+- ✅ Automatický výpočet IBAN z čísla účtu a kódu banky
+- ✅ Podpora prefixu účtu
 - ✅ Uživatelsky přívětivá administrace
 - ✅ Jednoduchý shortcode
 
@@ -51,18 +53,26 @@ Umožňuje správu více účtů, předdefinované zprávy pro příjemce a gene
 Najdeš v **Nastavení > QR Darovací Formulář**:
 
 - přidání/odebrání účtů
-- číslo účtu, kód banky
+- číslo účtu, prefix účtu (nepovinný) a kód banky
 - seznam poznámek (jedna poznámka na řádek)
 - poznámka může obsahovat `{{jmeno}}`, která bude nahrazena jménem dárce
+
+---
+
+## 🛠️ Technické detaily
+
+- QR kód je generován knihovnou [qrcode.js](https://github.com/davidshimjs/qrcodejs) uloženou lokálně v pluginu (`js/qrcode.min.js`)
+- Číslo účtu je automaticky převedeno na CZ IBAN (algoritmus ISO 7064 mod97)
+- QR kód odpovídá standardu [Czech QR platba (SPD 1.0)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – kompatibilní se všemi českými bankovními aplikacemi
 
 ---
 
 ## 🧠 Využití
 
 Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
-ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
+ale je použitelný pro všechny projekty, které chtějí přijímat dary s předdefinovanými poznámkami jednoduše přes QR kód.
 
 ---
 ### 📦 Stažení pluginu
 
-Aktuální stabilní verze: [v1.1 – drobné vylepšení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases/tag/v1.1)
+Aktuální stabilní verze: [v2.0 – Czech QR platba (SPD), bez externího API](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases)

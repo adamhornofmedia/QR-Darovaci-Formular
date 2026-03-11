@@ -3,9 +3,9 @@
 Plugin Name: QR Darovací Formulář
 Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
 Description: Darovací formulář s QR platbou.
-Version: 1.1
+Version: 2.0
 Author: Adam Hornof
-Author URI: https://adamhornof.cz
+Author URI: https://hornof.dev
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: qr-darovaci-formular
@@ -14,16 +14,16 @@ Tested up to: 6.5
 Requires PHP: 7.4
 */
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 // Přidání odkazu "Nastavení" do seznamu pluginů
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
     $settings_link = '<a href="' . admin_url('options-general.php?page=qr-darovaci-formular') . '">' . esc_html__('Nastavení', 'qr-darovaci-formular') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
 });
-
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
 
 class QR_Darovaci_Formular {
 
@@ -59,10 +59,11 @@ class QR_Darovaci_Formular {
         foreach ($input as $acc) {
             if (!isset($acc['name'], $acc['account'], $acc['bank_code'], $acc['notes']) || !is_array($acc['notes'])) continue;
             $sanitized[] = [
-                'name' => sanitize_text_field($acc['name']),
-                'account' => preg_replace('/[^0-9]/', '', $acc['account']),
+                'name'      => sanitize_text_field($acc['name']),
+                'account'   => preg_replace('/[^0-9]/', '', $acc['account']),
+                'prefix'    => preg_replace('/[^0-9]/', '', $acc['prefix'] ?? ''),
                 'bank_code' => preg_replace('/[^0-9]/', '', $acc['bank_code']),
-                'notes' => array_filter(array_map('sanitize_text_field', $acc['notes'])),
+                'notes'     => array_values(array_filter(array_map('sanitize_text_field', $acc['notes']))),
             ];
         }
         return $sanitized;
@@ -97,6 +98,7 @@ class QR_Darovaci_Formular {
                     <tr>
                         <th><?php echo esc_html__('Jméno účtu', 'qr-darovaci-formular'); ?></th>
                         <th><?php echo esc_html__('Číslo účtu', 'qr-darovaci-formular'); ?></th>
+                        <th><?php echo esc_html__('Prefix', 'qr-darovaci-formular'); ?></th>
                         <th><?php echo esc_html__('Kód banky', 'qr-darovaci-formular'); ?></th>
                         <th><?php echo esc_html__('Poznámky', 'qr-darovaci-formular'); ?></th>
                         <th><?php echo esc_html__('Akce', 'qr-darovaci-formular'); ?></th>
@@ -104,12 +106,13 @@ class QR_Darovaci_Formular {
                 </thead>
                 <tbody>
                 <?php if (empty($accounts)) : ?>
-                    <tr><td colspan="5"><?php echo esc_html__('Žádné účty nejsou nastaveny.', 'qr-darovaci-formular'); ?></td></tr>
+                    <tr><td colspan="6"><?php echo esc_html__('Žádné účty nejsou nastaveny.', 'qr-darovaci-formular'); ?></td></tr>
                 <?php else: ?>
                     <?php foreach ($accounts as $key => $acc) : ?>
                     <tr>
                         <td><?php echo esc_html($acc['name']); ?></td>
                         <td><?php echo esc_html($acc['account']); ?></td>
+                        <td><?php echo esc_html($acc['prefix'] ?? ''); ?></td>
                         <td><?php echo esc_html($acc['bank_code']); ?></td>
                         <td><pre style="white-space: pre-wrap;"><?php echo esc_html(implode("\n", $acc['notes'] ?? [])); ?></pre></td>
                         <td>
@@ -140,6 +143,10 @@ class QR_Darovaci_Formular {
                         <td><input name="account" type="text" id="account" required class="regular-text" placeholder="<?php echo esc_attr__('55552005', 'qr-darovaci-formular'); ?>"></td>
                     </tr>
                     <tr>
+                        <th><label for="prefix"><?php esc_html_e('Prefix účtu (nepovinné)', 'qr-darovaci-formular'); ?></label></th>
+                        <td><input name="prefix" type="text" id="prefix" class="regular-text" placeholder="<?php echo esc_attr__('19', 'qr-darovaci-formular'); ?>"></td>
+                    </tr>
+                    <tr>
                         <th><label for="bank_code"><?php esc_html_e('Kód banky', 'qr-darovaci-formular'); ?></label></th>
                         <td><input name="bank_code" type="text" id="bank_code" required class="regular-text" placeholder="<?php echo esc_attr__('2010', 'qr-darovaci-formular'); ?>"></td>
                     </tr>
@@ -160,12 +167,13 @@ class QR_Darovaci_Formular {
         }
         check_admin_referer('add_account');
 
-        $name = isset($_POST['name']) ? sanitize_text_field(wp_unslash($_POST['name'])) : '';
-        $account = isset($_POST['account']) ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['account'])) : '';
+        $name      = isset($_POST['name'])      ? sanitize_text_field(wp_unslash($_POST['name']))                   : '';
+        $account   = isset($_POST['account'])   ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['account']))   : '';
+        $prefix    = isset($_POST['prefix'])    ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['prefix']))    : '';
         $bank_code = isset($_POST['bank_code']) ? preg_replace('/[^0-9]/', '', wp_unslash($_POST['bank_code'])) : '';
-        $notes_raw = isset($_POST['notes']) ? wp_unslash($_POST['notes']) : '';
+        $notes_raw = isset($_POST['notes'])     ? wp_unslash($_POST['notes'])                                   : '';
 
-        $notes = array_filter(array_map('sanitize_text_field', explode("\n", $notes_raw)));
+        $notes = array_values(array_filter(array_map('sanitize_text_field', explode("\n", $notes_raw))));
 
         if (!$name || !$account || !$bank_code) {
             wp_redirect(add_query_arg('message', 'error', wp_get_referer()));
@@ -175,10 +183,11 @@ class QR_Darovaci_Formular {
         $accounts = $this->get_accounts();
 
         $accounts[] = [
-            'name' => $name,
-            'account' => $account,
+            'name'      => $name,
+            'account'   => $account,
+            'prefix'    => $prefix,
             'bank_code' => $bank_code,
-            'notes' => $notes,
+            'notes'     => $notes,
         ];
 
         update_option($this->option_name, $accounts);
@@ -212,6 +221,8 @@ class QR_Darovaci_Formular {
             return '<p>' . esc_html__('Darovací formulář není zatím nastaven. Kontaktujte správce webu.', 'qr-darovaci-formular') . '</p>';
         }
 
+        wp_enqueue_script( 'qrcodejs', plugin_dir_url( __FILE__ ) . 'js/qrcode.min.js', [], '1.0.0', true );
+
         ob_start();
         ?>
         <form id="qr-dar-form" style="max-width: 400px; margin: 2rem auto; text-align: center;">
@@ -236,11 +247,34 @@ class QR_Darovaci_Formular {
 
         <script>
         (function(){
-            const accounts = <?php echo json_encode($accounts); ?>;
+            const accounts      = <?php echo wp_json_encode( array_values( $accounts ) ); ?>;
             const accountSelect = document.getElementById('account-select');
-            const noteSelect = document.getElementById('note-select');
-            const form = document.getElementById('qr-dar-form');
-            const qrOutput = document.getElementById('qr-output');
+            const noteSelect    = document.getElementById('note-select');
+            const form          = document.getElementById('qr-dar-form');
+            const qrOutput      = document.getElementById('qr-output');
+
+            // Výpočet mod97 pro IBAN (ISO 7064)
+            function mod97(numStr) {
+                let r = 0;
+                for (let i = 0; i < numStr.length; i++) r = (r * 10 + parseInt(numStr[i], 10)) % 97;
+                return r;
+            }
+
+            // Převod číslo účtu / kód banky → IBAN (CZ)
+            function accountToIBAN(accountNumber, bankCode, prefix) {
+                prefix = (prefix || '').replace(/\D/g, '');
+                const bban  = bankCode.padStart(4, '0') + prefix.padStart(6, '0') + accountNumber.padStart(10, '0');
+                const check = (98 - mod97(bban + '1235' + '00')).toString().padStart(2, '0');
+                return 'CZ' + check + bban;
+            }
+
+            // Sestavení řetězce ve formátu Czech QR platba (SPD)
+            function buildSPD(iban, amount, message) {
+                const msg   = message.replace(/\*/g, '').substring(0, 60);
+                const parts = ['SPD', '1.0', 'ACC:' + iban, 'AM:' + parseFloat(amount).toFixed(2), 'CC:CZK'];
+                if (msg) parts.push('MSG:' + msg);
+                return parts.join('*');
+            }
 
             accountSelect.addEventListener('change', () => {
                 const selected = accountSelect.value;
@@ -267,30 +301,45 @@ class QR_Darovaci_Formular {
                 }
             });
 
-            form.addEventListener('submit', e => {
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const accKey = accountSelect.value;
+                const accKey       = accountSelect.value;
                 const noteTemplate = noteSelect.value || '';
-                const jmeno = document.getElementById('jmeno').value.trim();
-                const castka = document.getElementById('castka').value.trim();
+                const jmeno        = document.getElementById('jmeno').value.trim();
+                const castka       = document.getElementById('castka').value.trim();
 
                 if (!accKey || !noteTemplate || !jmeno || !castka) return;
 
-                const acc = accounts[accKey];
-                // Nahradíme {{jmeno}} v poznámce
-                let message = noteTemplate.replace(/{{jmeno}}/gi, jmeno);
+                const acc     = accounts[parseInt(accKey, 10)];
+                const message = noteTemplate.replace(/\{\{jmeno\}\}/gi, jmeno);
+                const iban    = accountToIBAN(acc.account, acc.bank_code, acc.prefix || '');
+                const spd     = buildSPD(iban, castka, message);
 
-                // Sestavíme QR API URL pro paylibo
-                // Formát zprávy musí být url-encoded a bez mezer kolem -
-                message = message.replace(/\s*–\s*/g, '–'); // mezera před i za pomlčkou na en-dash
+                // Vyčistíme výstup a přidáme elementy bez innerHTML (prevence XSS)
+                qrOutput.innerHTML = '';
 
-                const url = `https://api.paylibo.com/paylibo/generator/czech/image?accountNumber=${acc.account}&bankCode=${acc.bank_code}&amount=${parseFloat(castka).toFixed(2)}&currency=CZK&message=${encodeURIComponent(message)}`;
+                const heading = document.createElement('p');
+                const strong  = document.createElement('strong');
+                strong.textContent = '<?php echo esc_js( esc_html__( 'Naskenujte QR kód v bankovní aplikaci:', 'qr-darovaci-formular' ) ); ?>';
+                heading.appendChild(strong);
+                qrOutput.appendChild(heading);
 
-                qrOutput.innerHTML = `
-                    <p><strong><?php echo esc_html__('Naskenujte QR kód v bankovní aplikaci:', 'qr-darovaci-formular'); ?></strong></p>
-                    <img src="${url}" alt="QR Platba" style="max-width: 100%; height: auto; margin-top: 1rem;">
-                    <p>Zpráva: ${message}</p>
-                `;
+                const canvas = document.createElement('div');
+                qrOutput.appendChild(canvas);
+
+                const msgP = document.createElement('p');
+                msgP.appendChild(document.createTextNode('<?php echo esc_js( esc_html__( 'Zpráva:', 'qr-darovaci-formular' ) ); ?> '));
+                msgP.appendChild(document.createTextNode(message));
+                qrOutput.appendChild(msgP);
+
+                new QRCode(canvas, {
+                    text:         spd,
+                    width:        256,
+                    height:       256,
+                    colorDark:    '#000000',
+                    colorLight:   '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
             });
         })();
         </script>
