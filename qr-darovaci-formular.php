@@ -268,9 +268,14 @@ class QR_Darovaci_Formular {
                 return 'CZ' + check + bban;
             }
 
+            // Odstranění diakritiky (QR knihovna kóduje jako Latin-1, kde ě/š/č/ř/ž/ů/… nejsou)
+            function removeDiacritics(str) {
+                return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            }
+
             // Sestavení řetězce ve formátu Czech QR platba (SPD)
             function buildSPD(iban, amount, message) {
-                const msg   = message.replace(/\*/g, '').substring(0, 60);
+                const msg   = removeDiacritics(message).replace(/\*/g, '').substring(0, 60);
                 const parts = ['SPD', '1.0', 'ACC:' + iban, 'AM:' + parseFloat(amount).toFixed(2), 'CC:CZK'];
                 if (msg) parts.push('MSG:' + msg);
                 return parts.join('*');
