@@ -57,12 +57,18 @@ Najdeš v **Nastavení > QR Darovací Formulář**:
 
 ---
 
-## 🧠 Využití
+## 🛣️ Roadmap
 
-Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
-ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
-
+- Přidání slovenského formátu QR platby
+- Přechod z Paylibo api na vlastní řešení aby plugin nebyl závislý na jiném serveru
+- Optimalizace pro oficiální Wordpress repozitář
 ---
 ### 📦 Stažení pluginu
 
 Aktuální stabilní verze: [v1.1 – drobné vylepšení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases/tag/v1.1)
+---
+
+## 🧠 Využití
+
+Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
+ale je použitelný pro všechny projekty, které chtějí přijímat platby jednoduše přes QR kód.
