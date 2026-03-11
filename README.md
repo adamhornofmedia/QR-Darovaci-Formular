@@ -67,6 +67,20 @@ Najdeš v **Nastavení > QR Darovací Formulář**:
 
 ---
 
+## 🛠️ Technické detaily
+
+- QR kód je generován knihovnou [qrcode.js](https://github.com/davidshimjs/qrcodejs) uloženou lokálně v pluginu (`js/qrcode.min.js`)
+- Číslo účtu je automaticky převedeno na CZ IBAN (algoritmus ISO 7064 mod97)
+- QR kód odpovídá standardu [Czech QR platba (SPD 1.0)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – kompatibilní se všemi českými bankovními aplikacemi
+
+---
+
+## 🛣️ Roadmap
+
+- Přidání slovenského formátu QR platby
+- Optimalizace pro oficiální Wordpress repozitář
+---
+
 ## 🧠 Využití
 
 Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stastny-usmev.cz),  
