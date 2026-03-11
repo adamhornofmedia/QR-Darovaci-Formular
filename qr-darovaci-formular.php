@@ -3,7 +3,7 @@
 Plugin Name: QR Darovací Formulář
 Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
 Description: Darovací formulář s QR platbou.
-Version: 2.0
+Version: 2.1.0
 Author: Adam Hornof
 Author URI: https://hornof.dev
 License: GPLv2 or later
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Přidání odkazu "Nastavení" do seznamu pluginů
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), function($links) {
-    $settings_link = '<a href="' . admin_url('options-general.php?page=qr-darovaci-formular') . '">' . esc_html__('Nastavení', 'qr-darovaci-formular') . '</a>';
+    $settings_link = '<a href="' . admin_url('admin.php?page=qr-darovaci-formular') . '">' . esc_html__('Nastavení', 'qr-darovaci-formular') . '</a>';
     array_unshift($links, $settings_link);
     return $links;
 });
@@ -38,12 +38,14 @@ class QR_Darovaci_Formular {
     }
 
     public function add_admin_menu() {
-        add_options_page(
+        add_menu_page(
             esc_html__('QR Darovací Formulář', 'qr-darovaci-formular'),
             esc_html__('QR Darovací Formulář', 'qr-darovaci-formular'),
             'manage_options',
             'qr-darovaci-formular',
-            [$this, 'settings_page']
+            [$this, 'settings_page'],
+            'dashicons-money-alt',
+            30
         );
     }
 
@@ -81,15 +83,37 @@ class QR_Darovaci_Formular {
         $accounts = $this->get_accounts();
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('QR Darovací Formulář – Nastavení účtů', 'qr-darovaci-formular'); ?></h1>
-            <p><?php esc_html_e('Zde můžete přidávat a upravovat bankovní účty a předdefinované poznámky pro QR platbu.', 'qr-darovaci-formular'); ?></p>
-            <p><strong><?php esc_html_e('Jak to funguje:', 'qr-darovaci-formular'); ?></strong></p>
-            <ul>
-                <li><?php esc_html_e('Každý účet má své číslo účtu a kód banky.', 'qr-darovaci-formular'); ?></li>
-                <li><?php esc_html_e('Ke každému účtu můžete nadefinovat více poznámek, každou na nový řádek.', 'qr-darovaci-formular'); ?></li>
-                <li><?php esc_html_e('Při použití shortcode [qr_darovaci_formular ucet] může návštěvník vybrat účet a poznámku, zadat své jméno a částku.', 'qr-darovaci-formular'); ?></li>
-                <li><?php esc_html_e('V poznámce může být proměnná', 'qr-darovaci-formular'); ?> <code>{{jmeno}}</code>, <?php esc_html_e('která bude nahrazena zadaným jménem.', 'qr-darovaci-formular'); ?></li>
-            </ul>
+            <h1><?php esc_html_e('QR Darovací Formulář – Nastavení', 'qr-darovaci-formular'); ?></h1>
+
+            <div style="background:#fff;border:1px solid #c3c4c7;border-left:4px solid #2271b1;padding:16px 20px;margin:20px 0;max-width:800px;">
+                <h2 style="margin-top:0;"><?php esc_html_e('Návod k použití', 'qr-darovaci-formular'); ?></h2>
+
+                <h3><?php esc_html_e('1. Přidejte bankovní účet', 'qr-darovaci-formular'); ?></h3>
+                <p><?php esc_html_e('V části „Přidat nový účet" níže vyplňte:', 'qr-darovaci-formular'); ?></p>
+                <ul style="list-style:disc;margin-left:1.5em;">
+                    <li><strong><?php esc_html_e('Jméno účtu', 'qr-darovaci-formular'); ?></strong> – <?php esc_html_e('zobrazí se návštěvníkům ve formuláři (např. „Hlavní sbírka").', 'qr-darovaci-formular'); ?></li>
+                    <li><strong><?php esc_html_e('Číslo účtu', 'qr-darovaci-formular'); ?></strong> – <?php esc_html_e('pouze číslice, bez lomítka (např. 55552005).', 'qr-darovaci-formular'); ?></li>
+                    <li><strong><?php esc_html_e('Prefix účtu', 'qr-darovaci-formular'); ?></strong> – <?php esc_html_e('nepovinné, předčíslí účtu (např. 19).', 'qr-darovaci-formular'); ?></li>
+                    <li><strong><?php esc_html_e('Kód banky', 'qr-darovaci-formular'); ?></strong> – <?php esc_html_e('čtyřmístný kód banky (např. 2010 pro Fio banku).', 'qr-darovaci-formular'); ?></li>
+                    <li><strong><?php esc_html_e('Poznámky', 'qr-darovaci-formular'); ?></strong> – <?php esc_html_e('předdefinované zprávy pro příjemce platby, každá na samostatném řádku.', 'qr-darovaci-formular'); ?>
+                        <?php esc_html_e('Šablona může obsahovat proměnnou', 'qr-darovaci-formular'); ?> <code>{{jmeno}}</code>, <?php esc_html_e('která bude automaticky nahrazena jménem, které dárce zadá do formuláře (např. „Dar – {{jmeno}}").', 'qr-darovaci-formular'); ?></li>
+                </ul>
+
+                <h3><?php esc_html_e('2. Vložte formulář na stránku', 'qr-darovaci-formular'); ?></h3>
+                <p><?php esc_html_e('Na libovolné stránce nebo příspěvku vložte shortcode:', 'qr-darovaci-formular'); ?></p>
+                <pre style="background:#f0f0f1;padding:10px 14px;border-radius:3px;display:inline-block;">[qr_darovaci_formular]</pre>
+                <p style="margin-top:10px;"><?php esc_html_e('Chcete-li zobrazit jen konkrétní účet, použijte parametr', 'qr-darovaci-formular'); ?> <code>ucet</code> <?php esc_html_e('s pořadovým číslem (počítáno od 0):', 'qr-darovaci-formular'); ?></p>
+                <pre style="background:#f0f0f1;padding:10px 14px;border-radius:3px;display:inline-block;">[qr_darovaci_formular ucet=0]</pre>
+
+                <h3><?php esc_html_e('3. Jak formulář funguje na webu', 'qr-darovaci-formular'); ?></h3>
+                <ol style="list-style:decimal;margin-left:1.5em;">
+                    <li><?php esc_html_e('Dárce vybere bankovní účet (pokud je jich více).', 'qr-darovaci-formular'); ?></li>
+                    <li><?php esc_html_e('Vybere předdefinovanou poznámku (účel platby).', 'qr-darovaci-formular'); ?></li>
+                    <li><?php esc_html_e('Zadá své jméno a příjmení.', 'qr-darovaci-formular'); ?></li>
+                    <li><?php esc_html_e('Zadá částku v Kč.', 'qr-darovaci-formular'); ?></li>
+                    <li><?php esc_html_e('Stiskne tlačítko – plugin vygeneruje QR kód ve formátu Czech QR platba (SPD), který lze naskenovat v mobilní bankovní aplikaci.', 'qr-darovaci-formular'); ?></li>
+                </ol>
+            </div>
 
             <h2><?php esc_html_e('Seznam účtů', 'qr-darovaci-formular'); ?></h2>
 
@@ -225,6 +249,45 @@ class QR_Darovaci_Formular {
 
         ob_start();
         ?>
+        <style>
+        /*
+         * QR platba – grafická pravidla dle specifikace Czech QR platba (ČBA)
+         * T = velikost nejmenšího elementu (modulu) QR kódu
+         * qrcode.min.js generuje tabulku BEZ vlastní Tiché zóny.
+         * Verze 5 → 37 modulů → T = 256/37 ≈ 7 px  |  4T ≈ 28 px  |  2T ≈ 14 px
+         */
+        .qr-platba-wrap {
+            display: inline-block;
+            text-align: left;
+        }
+        /*
+         * Ohraničení QR kódu: kompletní čtyřstranná tenká černá čára (1,5 pt).
+         * Tichá zóna (4T = 28 px) je padding uvnitř ohraničení.
+         */
+        .qr-platba-box {
+            border: 1.5pt solid #000000;
+            padding: 28px;      /* Tichá zóna: 4T × 7 px = 28 px */
+            display: block;
+            background: #ffffff;
+            line-height: 0;
+        }
+        /*
+         * Označení QR kódu: Arial Bold, 16T × 4T
+         * – vertikálně zarovnaný pod hranu ohraničení (přímo pod boxem)
+         * – horizontálně na hranu QR kódu (margin-left = Mezera označení = 2T = 14 px)
+         */
+        .qr-platba-label {
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 20px;
+            height: 28px;       /* 4T = 28 px */
+            line-height: 28px;
+            color: #000000;
+            display: block;
+            margin-left: 14px;  /* Mezera označení: 2T = 14 px od levého vnějšího okraje */
+            white-space: nowrap;
+        }
+        </style>
         <form id="qr-dar-form" style="max-width: 400px; margin: 2rem auto; text-align: center;">
             <select id="account-select" required style="padding: 0.5rem; width: 100%; margin-bottom: 1rem;">
                 <option value="" disabled selected><?php echo esc_html__('Vyberte účet', 'qr-darovaci-formular'); ?></option>
@@ -292,7 +355,7 @@ class QR_Darovaci_Formular {
                         notes.forEach(note => {
                             const opt = document.createElement('option');
                             opt.value = note;
-                            opt.textContent = note;
+                            opt.textContent = note.replace(/\s*\{\{jmeno\}\}\s*/gi, ' ').trim();
                             noteSelect.appendChild(opt);
                         });
                         noteSelect.disabled = false;
@@ -329,15 +392,27 @@ class QR_Darovaci_Formular {
                 heading.appendChild(strong);
                 qrOutput.appendChild(heading);
 
-                const canvas = document.createElement('div');
-                qrOutput.appendChild(canvas);
+                // Wrapper dle grafické specifikace QR platba
+                const wrap = document.createElement('div');
+                wrap.className = 'qr-platba-wrap';
+
+                const box = document.createElement('div');
+                box.className = 'qr-platba-box';
+                wrap.appendChild(box);
+
+                const lbl = document.createElement('div');
+                lbl.className = 'qr-platba-label';
+                lbl.textContent = 'QR platba';
+                wrap.appendChild(lbl);
+
+                qrOutput.appendChild(wrap);
 
                 const msgP = document.createElement('p');
                 msgP.appendChild(document.createTextNode('<?php echo esc_js( esc_html__( 'Zpráva:', 'qr-darovaci-formular' ) ); ?> '));
                 msgP.appendChild(document.createTextNode(message));
                 qrOutput.appendChild(msgP);
 
-                new QRCode(canvas, {
+                new QRCode(box, {
                     text:         spd,
                     width:        256,
                     height:       256,
