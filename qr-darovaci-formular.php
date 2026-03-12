@@ -3,7 +3,7 @@
 Plugin Name: QR Darovací Formulář
 Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
 Description: Darovací formulář s QR platbou.
-Version: 2.1.1
+Version: 2.1.2
 Author: Adam Hornof
 Author URI: https://hornof.dev
 License: GPLv2 or later
@@ -284,22 +284,24 @@ class QR_Darovaci_Formular {
         }
         /*
          * Spodní lišta (nahrazuje spodní border):
-         * [čára 2T] [text "QR platba"] [čára do konce]
+         * [čára 2T] [text "QR Platba"] [čára do konce]
          */
         .qr-platba-bottom {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
         }
         /* Levý segment spodní čáry – Mezera označení: 2T = 14 px */
         .qr-platba-corner-left {
             width: 14px;
             flex-shrink: 0;
             border-top: 1.5pt solid #000000;
+            transform: translateY(-14px);
         }
         /* Pravý segment spodní čáry – vyplní zbytek šířky */
         .qr-platba-corner-right {
             flex: 1;
             border-top: 1.5pt solid #000000;
+            transform: translateY(-14px);
         }
         /*
          * Označení QR kódu: Arial Bold, 16T × 4T
@@ -314,6 +316,10 @@ class QR_Darovaci_Formular {
             color: #000000;
             white-space: nowrap;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+            transform: translateY(-14px);
         }
         </style>
         <form id="qr-dar-form" style="max-width: 400px; margin: 2rem auto; text-align: center;">
@@ -428,7 +434,7 @@ class QR_Darovaci_Formular {
                 box.className = 'qr-platba-box';
                 wrap.appendChild(box);
 
-                // Spodní lišta: [2T čára] [QR platba] [čára do konce]
+                // Spodní lišta: [2T čára] [QR Platba] [čára do konce]
                 const bottom = document.createElement('div');
                 bottom.className = 'qr-platba-bottom';
 
@@ -438,7 +444,7 @@ class QR_Darovaci_Formular {
 
                 const lbl = document.createElement('span');
                 lbl.className = 'qr-platba-label';
-                lbl.textContent = 'QR platba';
+                lbl.textContent = 'QR Platba';
                 bottom.appendChild(lbl);
 
                 const cornerR = document.createElement('span');
