@@ -1,7 +1,7 @@
 # QR Darovací Formulář
 
 **WordPress plugin pro generování QR kódu pro darování.**  
-Umožňuje správu více účtů, předdefinované zprávy pro příjemce a generování QR kódu přímo v prohlížeči dle [specifikace Czech QR platba (SPD)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – bez závislosti na externím API.
+Umožňuje správu více účtů, předdefinované zprávy pro příjemce a generování QR kódu přímo v prohlížeči dle [specifikace České QR platby (SPayD)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – bez závislosti na externím API.
 
 ---
 
@@ -10,7 +10,7 @@ Umožňuje správu více účtů, předdefinované zprávy pro příjemce a gene
 - ✅ Více bankovních účtů
 - ✅ Předdefinované zprávy s proměnnou `{{jmeno}}`
 - ✅ Výběr účtu a poznámky na frontendu
-- ✅ Generování QR platby přímo v prohlížeči (SPD formát, bez externího API)
+- ✅ Generování QR platby lokálně v prohlížeči (SPayD formát)
 - ✅ Automatický výpočet IBAN z čísla účtu a kódu banky
 - ✅ Podpora prefixu účtu
 - ✅ Uživatelsky přívětivá administrace
@@ -63,15 +63,7 @@ Najdeš v **Nastavení > QR Darovací Formulář**:
 
 - QR kód je generován knihovnou [qrcode.js](https://github.com/davidshimjs/qrcodejs) uloženou lokálně v pluginu (`js/qrcode.min.js`)
 - Číslo účtu je automaticky převedeno na CZ IBAN (algoritmus ISO 7064 mod97)
-- QR kód odpovídá standardu [Czech QR platba (SPD 1.0)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – kompatibilní se všemi českými bankovními aplikacemi
-
----
-
-## 🛠️ Technické detaily
-
-- QR kód je generován knihovnou [qrcode.js](https://github.com/davidshimjs/qrcodejs) uloženou lokálně v pluginu (`js/qrcode.min.js`)
-- Číslo účtu je automaticky převedeno na CZ IBAN (algoritmus ISO 7064 mod97)
-- QR kód odpovídá standardu [Czech QR platba (SPD 1.0)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – kompatibilní se všemi českými bankovními aplikacemi
+- QR kód odpovídá standardu [České QR platby (SPD 1.0)](https://qr-platba.cz/pro-vyvojare/specifikace-formatu/) – kompatibilní se všemi českými bankovními aplikacemi
 
 ---
 
@@ -94,4 +86,4 @@ Plugin obsahuje [qrcode.js od davidshimjs](https://github.com/davidshimjs/qrcode
 ---
 ### 📦 Stažení pluginu
 
-Aktuální stabilní verze: [v2.0 – Czech QR platba (SPD), bez externího API](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases)
+Aktuální stabilní verze: [v2.1.1 – Oprava grafického zobrazení](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases)
