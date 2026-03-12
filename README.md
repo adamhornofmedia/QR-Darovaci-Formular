@@ -87,6 +87,11 @@ Plugin vznikl pro neziskovou organizaci [Šťastný úsměv, z.s.](https://stast
 ale je použitelný pro všechny projekty, které chtějí přijímat dary s předdefinovanými poznámkami jednoduše přes QR kód.
 
 ---
+## 🫶 Poděkování
+
+Plugin obsahuje [qrcode.js od davidshimjs](https://github.com/davidshimjs/qrcodejs)
+
+---
 ### 📦 Stažení pluginu
 
 Aktuální stabilní verze: [v2.0 – Czech QR platba (SPD), bez externího API](https://github.com/adamhornofmedia/QR-Darovaci-Formular/releases)

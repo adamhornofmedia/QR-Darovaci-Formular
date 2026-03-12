@@ -3,7 +3,7 @@
 Plugin Name: QR Darovací Formulář
 Plugin URI: https://github.com/adamhornofmedia/QR-Darovaci-Formular/tree/main
 Description: Darovací formulář s QR platbou.
-Version: 2.1.0
+Version: 2.1.1
 Author: Adam Hornof
 Author URI: https://hornof.dev
 License: GPLv2 or later
@@ -181,6 +181,13 @@ class QR_Darovaci_Formular {
                 </table>
                 <?php submit_button(esc_html__('Přidat účet', 'qr-darovaci-formular')); ?>
             </form>
+
+            <hr>
+            <h2>🫶 <?php esc_html_e('Poděkování', 'qr-darovaci-formular'); ?></h2>
+            <p><?php echo wp_kses(
+                __('Plugin obsahuje <a href="https://github.com/davidshimjs/qrcodejs" target="_blank" rel="noopener noreferrer">qrcode.js od davidshimjs</a>.', 'qr-darovaci-formular'),
+                ['a' => ['href' => [], 'target' => [], 'rel' => []]]
+            ); ?></p>
         </div>
         <?php
     }
@@ -261,31 +268,52 @@ class QR_Darovaci_Formular {
             text-align: left;
         }
         /*
-         * Ohraničení QR kódu: kompletní čtyřstranná tenká černá čára (1,5 pt).
-         * Tichá zóna (4T = 28 px) je padding uvnitř ohraničení.
+         * Ohraničení QR kódu: 3 strany (top, left, right).
+         * Spodní hrana je přerušená textem – realizována ve .qr-platba-bottom.
+         * Tichá zóna (4T = 28 px) = padding.
          */
         .qr-platba-box {
-            border: 1.5pt solid #000000;
-            padding: 28px;      /* Tichá zóna: 4T × 7 px = 28 px */
+            border-top:   1.5pt solid #000000;
+            border-left:  1.5pt solid #000000;
+            border-right: 1.5pt solid #000000;
+            border-bottom: none;
+            padding: 28px;
             display: block;
             background: #ffffff;
             line-height: 0;
         }
         /*
+         * Spodní lišta (nahrazuje spodní border):
+         * [čára 2T] [text "QR platba"] [čára do konce]
+         */
+        .qr-platba-bottom {
+            display: flex;
+            align-items: flex-start;
+        }
+        /* Levý segment spodní čáry – Mezera označení: 2T = 14 px */
+        .qr-platba-corner-left {
+            width: 14px;
+            flex-shrink: 0;
+            border-top: 1.5pt solid #000000;
+        }
+        /* Pravý segment spodní čáry – vyplní zbytek šířky */
+        .qr-platba-corner-right {
+            flex: 1;
+            border-top: 1.5pt solid #000000;
+        }
+        /*
          * Označení QR kódu: Arial Bold, 16T × 4T
-         * – vertikálně zarovnaný pod hranu ohraničení (přímo pod boxem)
-         * – horizontálně na hranu QR kódu (margin-left = Mezera označení = 2T = 14 px)
+         * Vertikálně pod hranu ohraničení, horizontálně na hranu QR kódu.
+         * Text sedí v mezeře spodní čáry.
          */
         .qr-platba-label {
             font-family: Arial, sans-serif;
             font-weight: bold;
             font-size: 20px;
-            height: 28px;       /* 4T = 28 px */
-            line-height: 28px;
+            line-height: 28px;  /* 4T */
             color: #000000;
-            display: block;
-            margin-left: 14px;  /* Mezera označení: 2T = 14 px od levého vnějšího okraje */
             white-space: nowrap;
+            flex-shrink: 0;
         }
         </style>
         <form id="qr-dar-form" style="max-width: 400px; margin: 2rem auto; text-align: center;">
@@ -400,11 +428,24 @@ class QR_Darovaci_Formular {
                 box.className = 'qr-platba-box';
                 wrap.appendChild(box);
 
-                const lbl = document.createElement('div');
+                // Spodní lišta: [2T čára] [QR platba] [čára do konce]
+                const bottom = document.createElement('div');
+                bottom.className = 'qr-platba-bottom';
+
+                const cornerL = document.createElement('span');
+                cornerL.className = 'qr-platba-corner-left';
+                bottom.appendChild(cornerL);
+
+                const lbl = document.createElement('span');
                 lbl.className = 'qr-platba-label';
                 lbl.textContent = 'QR platba';
-                wrap.appendChild(lbl);
+                bottom.appendChild(lbl);
 
+                const cornerR = document.createElement('span');
+                cornerR.className = 'qr-platba-corner-right';
+                bottom.appendChild(cornerR);
+
+                wrap.appendChild(bottom);
                 qrOutput.appendChild(wrap);
 
                 const msgP = document.createElement('p');
